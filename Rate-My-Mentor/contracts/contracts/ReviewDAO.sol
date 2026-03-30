@@ -16,15 +16,11 @@ interface IReviewContract {
  */
 contract ReviewDAO is ReentrancyGuard {
     
-    // 业务选项：0 代表恢复正常状态，1 代表彻底撤销评价
-    enum ActionType { Restore, Revoke }
 
     enum FailureReason { 
-    None,           // 0: 成功（没有失败原因）
-    QuorumFailed,   // 1: 参与人数不足
-    VoteFailed      // 2: 反对票多于赞成票
+    None,           // 0: 成功
+    QuorumFailed    // 1: 赞成票未达到比例
 }
-
     struct Proposal {
         // --- Slot 1 (总计 232 bits, 完美打包) ---
         address proposer;            // 160 bits: 提案人
@@ -40,14 +36,13 @@ contract ReviewDAO is ReentrancyGuard {
 
         // --- Slot 3 & 4 (固定长度数据，拒绝 string 以节省 Gas) ---
         uint256 targetReviewId;      // 指向 ReviewContract 中的评价 ID 
-        ActionType action;           // 提案的操作类型
     }
 
     // --- 状态变量 (打包 Slot 以节省 Gas) ---
     address public admin;              // 160 bits
     uint32 public votingDuration;      // 32 bits: 投票期时长 (秒) 
     uint32 public timelockDuration;    // 32 bits: 执行锁定时长 (秒) 
-    uint8 public quorumPercentage = 5; // 8 bits: 法定人数比例 (1-100) 
+    uint8 public quorumPercentage = 10; // 8 bits: 法定人数比例 (1-100) 
     uint16 public minQuorumValue = 3;// 默认最少需要 3 个人参与，防止“光杆司令”过提案
     
     uint32 public nextProposalId;
@@ -59,7 +54,7 @@ contract ReviewDAO is ReentrancyGuard {
     mapping(uint256 => bool) public hasActiveProposal;
 
     // --- 事件 ---
-    event ProposalCreated(uint256 indexed id, uint256 indexed reviewId, ActionType action, address proposer);
+    event ProposalCreated(uint256 indexed id, uint256 indexed reviewId, address proposer);
     event Voted(uint256 indexed proposalId, address indexed voter, bool support); 
     event ProposalExecuted(uint256 indexed id, bool passed, FailureReason reason);
     event ProposalTimelockStarted(uint256 indexed id, uint32 executionTime); 
@@ -108,7 +103,7 @@ contract ReviewDAO is ReentrancyGuard {
     /**
      * @dev 创建提案：只需传入评价 ID 和操作意向
      */
-    function createProposal(uint256 _reviewId, ActionType _action,uint256 _tokenId) external returns (uint32) {
+    function createProposal(uint256 _reviewId, uint256 _tokenId) external returns (uint32) {
         // 检查该 Token 是否属于调用者，且是否有效
          require(sbtContract.ownerOf(_tokenId) == msg.sender, "Not your SBT");
          require(sbtContract.isValidCredential(_tokenId), "SBT is revoked or invalid");
@@ -116,6 +111,7 @@ contract ReviewDAO is ReentrancyGuard {
         require(reviewContract != address(0), "ReviewContract not set");
         require(!hasActiveProposal[_reviewId], "Proposal already exists for this review"); // ← 新增校验
         hasActiveProposal[_reviewId] = true; // ← 标记该 review 已进入治理流程
+        IReviewContract(reviewContract).updateReviewStatus(_reviewId, 1); // 1 = Disputed
         
 
         uint32 currentTotalSupply = uint32(sbtContract.totalSupply()); 
@@ -129,11 +125,10 @@ contract ReviewDAO is ReentrancyGuard {
             votesAgainst: 0,
             executionTime: 0,
             snapshotTotalSupply: currentTotalSupply,
-            targetReviewId: _reviewId,
-            action: _action
+            targetReviewId: _reviewId
         });
 
-        emit ProposalCreated(nextProposalId, _reviewId, _action, msg.sender);
+        emit ProposalCreated(nextProposalId, _reviewId, msg.sender);
         return nextProposalId++;
     }
 
@@ -179,13 +174,7 @@ contract ReviewDAO is ReentrancyGuard {
         } else {
             proposal.executed = true; 
             hasActiveProposal[proposal.targetReviewId] = false; 
-
-            // ✅ 使用枚举，代码更简洁
-            FailureReason reason = (totalVotes < quorumNeeded) 
-                ? FailureReason.QuorumFailed 
-                : FailureReason.VoteFailed;
-
-            emit ProposalExecuted(proposalId, false, reason);
+            emit ProposalExecuted(proposalId, false, FailureReason.QuorumFailed);
         }
     }
 
@@ -202,13 +191,18 @@ contract ReviewDAO is ReentrancyGuard {
 
         
         // 映射操作：Action.Restore -> Status.Normal (0); Action.Revoke -> Status.Revoked (2) 
-        uint8 targetStatus = (proposal.action == ActionType.Revoke) ? 2 : 0;
+        uint256 totalHolders = sbtContract.totalSupply();
+        uint256 quorumNeeded = (totalHolders * quorumPercentage) / 100;
+        if (quorumNeeded < minQuorumValue) quorumNeeded = minQuorumValue;
 
-        // 改用接口调用，编译器会自动检查函数签名和参数类型
-        IReviewContract(reviewContract).updateReviewStatus(
-            proposal.targetReviewId, 
-            targetStatus
-        );
+        if (proposal.votesFor >= quorumNeeded) {
+         // 赞成票达到比例 → Revoked
+         IReviewContract(reviewContract).updateReviewStatus(proposal.targetReviewId, 2);
+        
+        } else {
+            // 未达到 → 恢复 Normal
+            IReviewContract(reviewContract).updateReviewStatus(proposal.targetReviewId, 0);
+            }
 
         emit ProposalExecuted(proposalId, true,FailureReason.None);
     }

@@ -27,13 +27,14 @@ export default defineConfig({
     type: "edr-simulated",
     chainType: "l1",
   },
-  fuji: {
+ fuji: {
     type: "http",
     chainType: "l1",
-    url: process.env.AVALANCHE_FUJI_RPC_URL || "",
+    url: process.env.AVALANCHE_FUJI_RPC_URL || "https://api.avax-test.network/ext/bc/C/rpc",
+    chainId: 43113,
     accounts: process.env.AVALANCHE_PRIVATE_KEY
       ? [process.env.AVALANCHE_PRIVATE_KEY]
       : [],
-  },
+},
 },
 });

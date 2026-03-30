@@ -3,30 +3,34 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  const provider = new ethers.JsonRpcProvider(
-    process.env.AVALANCHE_FUJI_RPC_URL
-  );
-  const backendWallet = new ethers.Wallet(
-    process.env.AVALANCHE_PRIVATE_KEY!, provider
-  );
+  // 用 trustedBackend 的私钥签名
+  const backendWallet = new ethers.Wallet(process.env.AVALANCHE_PRIVATE_KEY!);
 
-  const userAddress = backendWallet.address; // 用自己的地址测试
-  const companyDomain = ethers.encodeBytes32String("bytedance.com");
-  const internStart = 1700000000;
-  const chainId = 43113n; // Fuji chainId
+  // 填入要铸造 SBT 的用户钱包地址
+  const userAddress = "0x70D01ddFe5BFD1030282368a9f7F10087750f5a3";
+  const credentialId = "cred-001";
+  const companyId = "company-001";
+  const credentialHash = ethers.keccak256(ethers.toUtf8Bytes("test-credential-001"));
+  const expireTime = Math.floor(Date.now() / 1000) + 3600; // 1小时后过期
+  const chainId = 43113; // Fuji
 
   const messageHash = ethers.solidityPackedKeccak256(
-    ["address", "bytes32", "uint32", "uint256"],
-    [userAddress, companyDomain, internStart, chainId]
+    ["string", "address", "string", "bytes32", "uint256"],
+    [credentialId, userAddress, companyId, credentialHash, expireTime]
   );
 
-  const signature = await backendWallet.signMessage(
-    ethers.getBytes(messageHash)
+  // 注意：合约用的是 abi.encode 不是 encodePacked
+  // 需要改用 AbiCoder
+  const abiCoder = ethers.AbiCoder.defaultAbiCoder();
+  const encoded = abiCoder.encode(
+    ["string", "address", "string", "bytes32", "uint256"],
+    [credentialId, userAddress, companyId, credentialHash, expireTime]
   );
+  const hash = ethers.keccak256(encoded);
+  const signature = await backendWallet.signMessage(ethers.getBytes(hash));
 
-  console.log("userAddress:", userAddress);
-  console.log("companyDomain:", companyDomain);
-  console.log("internStart:", internStart);
+  console.log("credentialHash:", credentialHash);
+  console.log("expireTime:", expireTime);
   console.log("signature:", signature);
 }
 

@@ -35,3 +35,5 @@ coverage.json
 bundle/
 dist/
 .openzeppelin/
+# Ignition build info (large files, not needed)
+contracts/ignition/deployments/**/build-info/
