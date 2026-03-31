@@ -35,6 +35,9 @@ lcov.info
 # Claude Code
 .claude/
 
+# Internal dev docs
+协作开发指南.md
+
 # Misc
 *.local
 *.log
