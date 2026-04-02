@@ -4,6 +4,8 @@
 # 构建输出
 dist
 dist-ssr
+.next/
+**/.next/
 
 # 本地环境文件
 .env
