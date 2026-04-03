@@ -89,7 +89,7 @@ export function usePetState() {
       const onchainXp = Number(onchain[0]);
 
       // 更安全的判断
-      if (onchain[3] > 0 || onchain[2] !== "") {
+      if (onchain[2] !== "") {
         setPet((prev) => ({
           ...prev,
           created: true,
