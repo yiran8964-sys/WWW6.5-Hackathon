@@ -11,7 +11,7 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
 const app = express();
 
 // ✅ 我帮你改好了：Railway 部署 + 本地开发 都兼容
-const PORT = process.env.PORT || env.PORT;
+const PORT = Number(process.env.PORT) || Number(env.PORT);
 
 // 全局中间件
 app.use(cors()); // 跨域处理
