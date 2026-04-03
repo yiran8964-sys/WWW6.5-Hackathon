@@ -9,12 +9,26 @@ import { loggerMiddleware } from './middlewares/logger.middleware';
 
 const app = express();
 
-// 🔥 终极修复：固定端口 3000，彻底解决类型报错
+// 🔥 固定端口 3000
 const PORT = 3000;
 
-// 健康检查接口（放到最前面，不被任何中间件拦截）
+// ✅ 根路由 / （解决 404 关键！）
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: "Rate My Mentor 后端服务运行成功",
+    health: "/health",
+    api: "/api/v1"
+  });
+});
+
+// ✅ 健康检查
 app.get('/health', (req, res) => {
-  res.json({ success: true, message: 'Rate My Mentor 后端服务运行正常', timestamp: new Date().toISOString() });
+  res.json({
+    success: true,
+    message: "服务运行正常",
+    timestamp: new Date().toISOString()
+  });
 });
 
 // 全局中间件
@@ -29,7 +43,7 @@ app.use('/api/v1', rootRouter);
 // 全局错误处理
 app.use(errorMiddleware);
 
-// 启动服务（标准无错写法）
+// 启动服务
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 后端服务已启动，运行在端口 ${PORT}`);
   console.log(`📊 健康检查地址：/health`);
