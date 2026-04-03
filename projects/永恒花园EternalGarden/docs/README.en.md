@@ -54,7 +54,7 @@ This repository is an **MVP / demo** implementation: some flows are simulated or
 ## Local Development
 
 ```bash
-cd projects/eternal-garden/src/ui
+cd projects/永恒花园EternalGarden/src/ui
 npm install
 npm run dev
 ```
@@ -72,7 +72,7 @@ npm start
 
 ## Deployment (Vercel)
 
-If the Git repo is a monorepo, set Vercel **Root Directory** to **`projects/eternal-garden/src/ui`**. See [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md).
+If the Git repo is a monorepo, set Vercel **Root Directory** to **`projects/永恒花园EternalGarden/src/ui`**. See [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md).
 
 ---
 
