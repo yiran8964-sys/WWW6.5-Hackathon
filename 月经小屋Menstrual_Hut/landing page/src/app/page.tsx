@@ -15,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { TwilightBackground } from "@/components/twilight-background";
 import { buttonVariants } from "@/components/ui/button";
 import { LanguageToggle, useLocale } from "@/contexts/locale-context";
 import { cn } from "@/lib/utils";
@@ -33,21 +34,6 @@ function MoonGlow({ className }: { className?: string }) {
       )}
       aria-hidden
     />
-  );
-}
-
-function MoonIconDecor({ className }: { className?: string }) {
-  return (
-    <svg
-      className={cn("text-petal/25", className)}
-      viewBox="0 0 120 120"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <circle cx="60" cy="60" r="52" fill="currentColor" opacity="0.35" />
-      <circle cx="78" cy="52" r="48" className="fill-hut-cream" />
-    </svg>
   );
 }
 
@@ -86,11 +72,10 @@ export default function LandingPage() {
   const { t } = useLocale();
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-hut-cream bg-hero-mist">
+    <div className="relative min-h-screen overflow-x-hidden">
+      <TwilightBackground />
+      <div className="relative z-10">
       <MoonGlow className="-top-32 left-1/2 h-96 w-[min(100vw,720px)] -translate-x-1/2" />
-      <div className="pointer-events-none absolute right-[-10%] top-40 h-64 w-64 text-petal/10 md:right-[5%]">
-        <MoonIconDecor className="h-full w-full animate-float" />
-      </div>
       <div className="pointer-events-none absolute bottom-[20%] left-[-5%] hidden w-40 md:block">
         <HutSilhouette className="h-auto w-full opacity-60" />
       </div>
@@ -99,23 +84,23 @@ export default function LandingPage() {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 border-b border-petal/10 bg-hut-cream/80 backdrop-blur-md"
+        className="sticky top-0 z-50 border-b border-stone-300/60 bg-hut-cream/95 backdrop-blur-md"
       >
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6">
           <Link
             href="/"
-            className="flex min-w-0 items-center gap-2 text-petal-deep transition hover:text-petal"
+            className="flex min-w-0 items-center gap-2 text-stone-900 transition hover:text-petal-deep"
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-moon-glow to-fuchsia-100 shadow-card">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-petal/20 bg-gradient-to-br from-moon-glow to-fuchsia-100 shadow-card">
               <Moon className="h-4 w-4 text-petal" strokeWidth={2} />
             </span>
-            <span className="font-display text-sm font-semibold tracking-tight sm:text-base">
+            <span className="font-display text-sm font-bold tracking-tight text-stone-900 sm:text-base">
               {t.brand}
             </span>
           </Link>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <LanguageToggle />
-            <p className="max-w-[min(100%,11rem)] text-right font-display text-[10px] font-medium leading-tight text-petal-deep/80 sm:max-w-[14rem] sm:text-xs md:max-w-none md:text-sm">
+            <p className="max-w-[min(100%,11rem)] text-right font-display text-[10px] font-bold leading-tight text-stone-900 sm:max-w-[14rem] sm:text-xs md:max-w-none md:text-sm">
               {t.tagline}
             </p>
           </div>
@@ -130,10 +115,10 @@ export default function LandingPage() {
               initial="hidden"
               animate="show"
               variants={fadeUp}
-              className="mb-4 inline-flex items-center gap-2 rounded-full border border-petal/15 bg-white/60 px-3 py-1 text-xs text-petal-deep shadow-sm backdrop-blur-sm sm:text-sm"
+              className="mb-4 inline-flex items-center gap-2 rounded-full border border-stone-300/80 bg-white/95 px-3 py-1.5 text-xs font-semibold text-stone-900 shadow-md backdrop-blur-sm sm:text-sm"
             >
-              <Sparkles className="h-3.5 w-3.5 text-lilac" />
-              <span className="font-medium">{t.heroBadge}</span>
+              <Sparkles className="h-3.5 w-3.5 shrink-0 text-petal" strokeWidth={2.5} />
+              <span>{t.heroBadge}</span>
             </motion.div>
             <motion.h1
               custom={1}
@@ -149,7 +134,7 @@ export default function LandingPage() {
               initial="hidden"
               animate="show"
               variants={fadeUp}
-              className="mt-3 font-display text-lg font-semibold text-petal-deep sm:text-xl"
+              className="mt-3 font-display text-lg font-semibold text-fuchsia-200 sm:text-xl"
             >
               {t.tagline}
             </motion.p>
@@ -158,7 +143,7 @@ export default function LandingPage() {
               initial="hidden"
               animate="show"
               variants={fadeUp}
-              className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-stone-600 sm:text-lg"
+              className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-stone-200 sm:text-lg"
             >
               {t.heroSubtitle}
             </motion.p>
@@ -193,7 +178,7 @@ export default function LandingPage() {
 
         <section
           id="why"
-          className="relative border-t border-petal/10 bg-section-soft px-4 py-16 sm:px-6 sm:py-20"
+          className="relative bg-section-soft px-4 py-16 sm:px-6 sm:py-20"
         >
           <div className="mx-auto max-w-3xl">
             <motion.h2
@@ -201,7 +186,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5 }}
-              className="font-display text-center text-2xl font-bold text-petal-deep sm:text-3xl"
+              className="font-display text-center text-2xl font-bold text-fuchsia-200 sm:text-3xl"
             >
               {t.whyTitle}
             </motion.h2>
@@ -210,13 +195,13 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: 0.08 }}
-              className="mx-auto mt-6 max-w-2xl space-y-4 text-pretty text-left text-base leading-[1.85] text-stone-600 sm:text-lg"
+              className="mx-auto mt-6 max-w-2xl space-y-4 rounded-2xl border border-white/10 bg-slate-950/55 p-6 text-pretty text-left text-base leading-[1.85] text-stone-100 shadow-lg backdrop-blur-md sm:p-8 sm:text-lg"
             >
               {t.whyPoints.map((point, i) => (
                 <p key={i}>
-                  <span className="font-semibold text-petal-deep">{point.label}</span>
+                  <span className="font-semibold text-fuchsia-300">{point.label}</span>
                   {" — "}
-                  {point.body}
+                  <span className="text-stone-200">{point.body}</span>
                 </p>
               ))}
             </motion.div>
@@ -229,7 +214,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              className="text-center font-display text-2xl font-bold text-petal-deep sm:text-3xl"
+              className="text-center font-display text-2xl font-bold text-fuchsia-200 sm:text-3xl"
             >
               {t.blockchainTitle}
             </motion.h2>
@@ -243,7 +228,7 @@ export default function LandingPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-40px" }}
                     transition={{ delay: i * 0.06, duration: 0.45 }}
-                    className="group rounded-2xl border border-petal/10 bg-white/70 p-6 shadow-card backdrop-blur-sm transition hover:border-lilac/30 hover:shadow-moon"
+                    className="group rounded-2xl border border-petal/10 bg-white/85 p-6 text-stone-800 shadow-card backdrop-blur-sm transition hover:border-lilac/30 hover:shadow-moon"
                   >
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-moon-glow to-fuchsia-50 text-petal transition group-hover:scale-105">
                       <Icon className="h-6 w-6" strokeWidth={1.75} />
@@ -261,14 +246,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden border-y border-petal/10 bg-gradient-to-b from-hut-blush/40 via-moon-glow/30 to-hut-cream px-4 py-16 sm:px-6 sm:py-20">
-          <MoonGlow className="right-0 top-1/2 h-72 w-72 -translate-y-1/2 translate-x-1/3 opacity-50" />
+        <section className="relative overflow-hidden border-y border-white/10 bg-gradient-to-b from-fuchsia-950/25 via-slate-900/40 to-slate-950/30 px-4 py-16 sm:px-6 sm:py-20">
           <div className="relative mx-auto max-w-3xl text-center">
             <motion.h2
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-display text-2xl font-bold text-petal-deep sm:text-3xl"
+              className="font-display text-2xl font-bold text-fuchsia-200 sm:text-3xl"
             >
               {t.whatTitle}
             </motion.h2>
@@ -277,7 +261,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.06 }}
-              className="mt-6 text-pretty text-base leading-[1.85] text-stone-600 sm:text-lg"
+              className="mt-6 text-pretty text-base leading-[1.85] text-stone-200 sm:text-lg"
             >
               {t.whatBody}
             </motion.p>
@@ -290,7 +274,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center font-display text-2xl font-bold text-petal-deep sm:text-3xl"
+              className="text-center font-display text-2xl font-bold text-fuchsia-200 sm:text-3xl"
             >
               {t.howTitle}
             </motion.h2>
@@ -304,7 +288,7 @@ export default function LandingPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className="relative flex flex-1 flex-col rounded-2xl border border-petal/10 bg-white/80 p-5 text-center shadow-card md:min-w-0"
+                    className="relative flex flex-1 flex-col rounded-2xl border border-petal/10 bg-white/85 p-5 text-center text-stone-800 shadow-card md:min-w-0"
                   >
                     {i < 3 && (
                       <div
@@ -335,7 +319,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center font-display text-2xl font-bold text-petal-deep sm:text-3xl"
+              className="text-center font-display text-2xl font-bold text-fuchsia-200 sm:text-3xl"
             >
               {t.mvpTitle}
             </motion.h2>
@@ -364,7 +348,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-display text-2xl font-bold text-petal-deep sm:text-3xl"
+              className="font-display text-2xl font-bold text-fuchsia-200 sm:text-3xl"
             >
               {t.trackTitle}
             </motion.h2>
@@ -382,7 +366,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.12 }}
-              className="mt-6 text-pretty text-base leading-[1.85] text-stone-600 sm:text-lg"
+              className="mt-6 text-pretty text-base leading-[1.85] text-stone-200 sm:text-lg"
             >
               {t.trackBody}
             </motion.p>
@@ -395,7 +379,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center font-display text-2xl font-bold text-petal-deep sm:text-3xl"
+              className="text-center font-display text-2xl font-bold text-fuchsia-200 sm:text-3xl"
             >
               {t.futureTitle}
             </motion.h2>
@@ -407,7 +391,7 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="rounded-2xl border border-white/60 bg-white/70 p-6 text-center shadow-card backdrop-blur-sm"
+                  className="rounded-2xl border border-white/60 bg-white/85 p-6 text-center text-stone-800 shadow-card backdrop-blur-sm"
                 >
                   <h3 className="font-display text-lg font-semibold text-petal-deep">
                     {card.title}
@@ -429,7 +413,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-display text-balance text-xl font-medium leading-relaxed text-petal-deep sm:text-2xl"
+              className="font-display text-balance text-xl font-medium leading-relaxed text-fuchsia-100 sm:text-2xl"
             >
               {t.closingQuote}
             </motion.blockquote>
@@ -454,9 +438,10 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-petal/10 bg-hut-cream/90 py-6 text-center text-xs text-stone-500">
+      <footer className="border-t border-white/10 bg-hut-cream/95 py-6 text-center text-xs text-stone-600">
         <p>{t.footer}</p>
       </footer>
+      </div>
     </div>
   );
 }

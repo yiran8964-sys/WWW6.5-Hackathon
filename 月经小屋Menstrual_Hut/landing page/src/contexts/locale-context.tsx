@@ -82,14 +82,14 @@ export function LanguageToggle({ className }: { className?: string }) {
       role="group"
       aria-label={locale === "zh" ? t.switchToEn : t.switchToZh}
     >
-      <div className="inline-flex rounded-full border border-petal/20 bg-white/70 p-0.5 shadow-sm backdrop-blur-sm">
+      <div className="inline-flex rounded-full border border-stone-300/80 bg-white/95 p-0.5 shadow-md backdrop-blur-sm">
         <button
           type="button"
           onClick={() => setLocale("zh")}
-          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition sm:px-3 sm:text-sm ${
+          className={`rounded-full px-2.5 py-1 text-xs font-bold transition sm:px-3 sm:text-sm ${
             locale === "zh"
-              ? "bg-gradient-to-r from-petal/90 to-lilac/90 text-white shadow-sm"
-              : "text-petal-deep/70 hover:bg-moon-glow/50"
+              ? "bg-gradient-to-r from-petal to-lilac text-white shadow-sm"
+              : "text-stone-800 hover:bg-stone-100"
           }`}
           aria-pressed={locale === "zh"}
         >
@@ -98,10 +98,10 @@ export function LanguageToggle({ className }: { className?: string }) {
         <button
           type="button"
           onClick={() => setLocale("en")}
-          className={`rounded-full px-2.5 py-1 text-xs font-semibold transition sm:px-3 sm:text-sm ${
+          className={`rounded-full px-2.5 py-1 text-xs font-bold transition sm:px-3 sm:text-sm ${
             locale === "en"
-              ? "bg-gradient-to-r from-petal/90 to-lilac/90 text-white shadow-sm"
-              : "text-petal-deep/70 hover:bg-moon-glow/50"
+              ? "bg-gradient-to-r from-petal to-lilac text-white shadow-sm"
+              : "text-stone-800 hover:bg-stone-100"
           }`}
           aria-pressed={locale === "en"}
         >
